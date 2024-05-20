@@ -24,6 +24,7 @@ class PET:
         self.pictures = parameters["pictures"]
         self.exists = True
         self.Time = 0 # время жизни в минутах
+        self.is_sleep = False
         self.Exist()
 
     def Hunger(self):
@@ -62,6 +63,7 @@ class PET:
         return msg, self.pictures["joy"]
 
     def Sleep(self):
+        self.is_sleep = True
         time.sleep(1200)
         self.vivacity = min(self.vivacity + 30, 100)
         self.fun = min(self.fun + 5, 100)
@@ -77,10 +79,22 @@ class PET:
                 self.Sad()
             if self.vivacity % 20 == 0:
                 self.Sleep()
+                self.is_sleep = False
             if self.health == 0:
                 self.exists = False
 
 
+parameters = {
+    "name": "Phoenix",
+    "animal": "cat",
+    "pictures": {
+        "glad": "a",  # доволен
+        "sad": "b",  # грустит
+        "angry": "c",  # сердится
+        "joy": "d"  # радуется
+    }
+}
 
-
+cat = PET(parameters)
+print(cat.food)
 
