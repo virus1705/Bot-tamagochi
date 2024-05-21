@@ -1,5 +1,6 @@
 import time
 import threading
+import random
 
 """ пример словаря pictures
 
@@ -59,8 +60,11 @@ class PET:
         self.Time = 0 # время жизни в минутах
         self.is_sleep = False
         self.sleep_time = 0
+        self.debuff = 0
+        self.is_clean = True
+        self.toilet_time = -1
 
-
+    # -------------------------------------------------------Есть-------------------------------------------------------
     def Hunger(self):
         if self.food > 0:
             self.food -= 1
@@ -77,9 +81,11 @@ class PET:
         self.health = min(self.health + 4, 100)
         self.fun = min(self.fun + 5, 100)
         self.vivacity = min(self.vivacity + 5, 100)
+        self.debuff += 1
         msg = "Ням-ням!"
         return msg, self.pictures["glad"]
 
+    # ---------------------------------------------------------Играть---------------------------------------------------
     def Sad(self):
         if self.fun >= 80:
             self.fun -= 1
@@ -98,6 +104,8 @@ class PET:
         msg = "Урааа! Играть!"
         return msg, self.pictures["joy"]
 
+    # -------------------------------------------------------Спать------------------------------------------------------
+
     def Sleep(self):
         self.is_sleep = True
         while self.is_sleep and self.sleep_time < 1200:
@@ -109,6 +117,7 @@ class PET:
         self.Hunger()
         self.Sad()
         return
+
     def wake_up(self):  # разбудить
         self.is_sleep = False
         if self.sleep_time >= 660:  # 11 минут
@@ -118,6 +127,21 @@ class PET:
             msg = "* Зевок *. Ну ещё хотя бы 5 минут!"
             return msg, self.pictures["angry"]
 
+    # -----------------------------------------------------srat'--------------------------------------------------------
+    def to_toilet(self):
+        if self.debuff == 1:
+            self.toilet_time = random.randrange(self.Time+5, [self.Time+120, 1])
+        return
+
+    def To_clean(self):
+        self.is_clean = True
+        self.toilet_time = 0
+        self.debuff = 0
+        msg = "Ура!"
+        return msg, self.pictures["joy"]
+
+
+    # -----------------------------------------------------Жить---------------------------------------------------------
 
     def Print_characteristics(self):  # отправить характеристики
         charact = {
@@ -142,6 +166,11 @@ class PET:
                 self.Sleep()
                 self.is_sleep = False
                 self.sleep_time = 0
+            if self.Time == self.toilet_time:
+                self.is_clean = False
+            if not self.is_clean:
+                self.health -= self.debuff//2
+                self.fun -= self.debuff
             if self.health == 0:
                 self.exists = False
         return
