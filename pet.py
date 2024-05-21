@@ -82,6 +82,7 @@ class PET:
         self.fun = min(self.fun + 5, 100)
         self.vivacity = min(self.vivacity + 5, 100)
         self.debuff += 1
+        self.to_toilet()
         msg = "Ням-ням!"
         return msg, self.pictures["glad"]
 
