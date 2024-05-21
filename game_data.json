@@ -1,0 +1,172 @@
+{
+  "description": "в этом файле будет описана вложеная структура квеста: сообщения, ссылки на изображения, результаты выбранных действий, награды",
+  "title": "Мой Тамагочи",
+  "cover_url": "https://disk.yandex.ru/i/O6_qM4EqqODPOw",
+  "welcome_message": "",
+  "location_data": {
+    "404": {
+      "id": "404",
+      "description": "ой, ты куда-то не туда нажал...",
+      "options_new": {
+        "start": {
+          "label": "заново",
+          "picture_url": ""
+        }
+      },
+      "picture_urls": [
+        "https://disk.yandex.ru/i/3H1ev5XyAKEl0g"
+      ]
+    },
+    "start": {
+      "id": "start",
+      "description": "Вот варианты твоего питомца\nВыбери один из них:",
+      "options_new": {
+        "cat": {
+          "label": "кот",
+          "picture_url": "https://disk.yandex.ru/i/cTHyvsXQ0IBCrg"
+        },
+        "dog": {
+          "label": "собака",
+          "picture_url": "https://disk.yandex.ru/i/gKdrGHesop5NOA"
+        },
+        "hamster": {
+          "label": "хомяк",
+          "picture_url": "https://disk.yandex.ru/i/HOcbrmbS_85LWg"
+        }
+      },
+      "picture_urls": [
+        ""
+      ],
+      "picture_url": "https://disk.yandex.ru/i/0PTtLv5g1BbKqQ"
+    },
+    "cat": {
+      "id": "cat",
+      "description": "Вот твой новый питомец - котенок.\nТеперь, для того, чтобы он жил счастливую жизнь ты должен за ним ухаживать. Начнем?",
+      "options_new": {
+        "care": {
+          "label": "ухаживать",
+          "picture_url": ""
+        }
+      },
+      "picture_urls": [
+        "https://disk.yandex.ru/i/cTHyvsXQ0IBCrg"
+      ]
+    },
+    "dog": {
+      "id": "dog",
+      "description": "Вот твой новый питомец - щенок.\nТеперь, для того, чтобы он жил счастливую жизнь ты должен за ним ухаживать. Начнем?",
+      "options_new": {
+        "care": {
+          "label": "ухаживать",
+          "picture_url": ""
+        }
+      },
+      "picture_urls": [
+        "https://disk.yandex.ru/i/gKdrGHesop5NOA"
+      ]
+    },
+    "hamster": {
+      "id": "hamster",
+      "description": "Вот твой новый питомец - хомячок.\nТеперь, для того, чтобы он жил счастливую жизнь ты должен за ним ухаживать. Начнем?",
+      "options_new": {
+        "care": {
+          "label": "ухаживать",
+          "picture_url": ""
+        }
+      },
+      "picture_urls": [
+        "https://disk.yandex.ru/i/HOcbrmbS_85LWg"
+      ]
+    },
+    "care": {
+      "id": "care",
+      "description": "Основные потребности твоего питомца :",
+      "options_new": {
+        "feed": {
+          "label": "кушать",
+          "picture_url": ""
+        },
+        "play": {
+          "label": "играть",
+          "picture_url": ""
+        },
+        "sleep": {
+          "label": "спать",
+          "picture_url": ""
+        },
+        "toilet": {
+          "label": "туалет",
+          "picture_url": ""
+        }
+      },
+      "picture_urls": [
+        "https://disk.yandex.ru/i/gpggKtd1fkEYKg"
+      ]
+    },
+    "feed": {
+      "id": "feed",
+      "description": "Теперь твой питомец сыт, возвращайся через 4 часа.",
+      "options_new": {
+        "care": {
+          "label": "перейти к другим потребностям",
+          "picture_url": ""
+        }
+      },
+      "picture_urls": [
+        "https://disk.yandex.ru/i/cTHyvsXQ0IBCrg"
+      ]
+    },
+    "play": {
+      "id": "play",
+      "description": "Ты поиграл со своим питомцем, возвращайся через 3 часа.",
+      "options_new": {
+        "care": {
+          "label": "перейти к другим потребностям",
+          "picture_url": ""
+        }
+      },
+      "picture_urls": [
+        "https://disk.yandex.ru/i/gKdrGHesop5NOA"
+      ]
+    },
+    "sleep": {
+      "id": "sleep",
+      "description": "Ты уложил питомца спать. Разбуди его через 4 часа.",
+      "options_new": {
+        "wake": {
+          "label": "разбудить",
+          "picture_url": ""
+        }
+      },
+      "picture_urls": [
+        "https://disk.yandex.ru/i/HOcbrmbS_85LWg"
+      ]
+    },
+    "wake": {
+      "id": "wake",
+      "description": "Ты разбудил питомца. Возвращайся через 6 часов",
+      "options_new": {
+        "care": {
+          "label": "перейти к другим потребностям",
+          "picture_url": ""
+          }
+      },
+      "picture_urls": [
+        "https://disk.yandex.ru/i/HOcbrmbS_85LWg"
+      ]
+    },
+    "toilet": {
+      "id": "toilet",
+      "description": "Ты сводил питомца в туалет, возвращайся через 3 часа.",
+      "options_new": {
+        "care": {
+          "label": "перейти к другим потребностям",
+          "picture_url": ""
+        }
+      },
+      "picture_urls": [
+        "https://disk.yandex.ru/i/HOcbrmbS_85LWg"
+      ]
+    }
+  }
+}
