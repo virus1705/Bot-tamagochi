@@ -33,7 +33,9 @@ def prepare_database():
                     f'(id INTEGER PRIMARY KEY, ' \
                     f'user_id INTEGER, ' \
                     f'data_create TEXT, ' \
-                    f'data_eating TEXT' \
+                    f'data_eating TEXT, ' \ 
+                    f'data_sleep TEXT, ' \
+                    f'data_play TEXT, ' \
                     f'pet_name TEXT)'
     #если надо добавить что-то ещё - напишите
     execute_query(DB_NAME, sql_query)
@@ -94,12 +96,32 @@ def update_data_create(user_id, data_create):
     con.commit()
     con.close()
 
+#обновление данных о дате сна питомца
+def update_data_sleep(user_id, data_sleep):
+    con = sqlite3.connect('db.sqlite')
+    cur = con.cursor()
+
+    #column - название поля в таблице users
+    query = f'UPDATE {table_name} SET data_sleep = {data_sleep} WHERE user_id = ?'
+    cur.execute(query, (user_id, ))
+    con.commit()
+    con.close()
+
+#обновление данных о дате игры с питомцем
+def update_data_play(user_id, data_play):
+    con = sqlite3.connect('db.sqlite')
+    cur = con.cursor()
+
+    query = f'UPDATE {table_name} SET data_play = {data_play} WHERE user_id = ?'
+    cur.execute(query, (user_id, ))
+    con.commit()
+    con.close()
+
 #обновление данных о том, кто является питомцем
 def update_data_pet(user_id, pet):
     con = sqlite3.connect('db.sqlite')
     cur = con.cursor()
 
-    #column - название поля в таблице users
     query = f'UPDATE {table_name} SET pet = {pet} WHERE user_id = ?'
     cur.execute(query, (user_id, ))
     con.commit()
@@ -147,6 +169,30 @@ def get_user_pet_data_create(user_id):
     cur = con.cursor()
 
     query = f'SELECT data_create FROM {table_name} WHERE user_id = {user_id}'
+    cur.execute(query)
+
+    rows = cur.fetchall()
+    con.close()
+    return rows
+
+#получение информации о дате сна питомца
+def get_user_pet_data_sleep(user_id):
+    con = sqlite3.connect('db.sqlite')
+    cur = con.cursor()
+
+    query = f'SELECT data_sleep FROM {table_name} WHERE user_id = {user_id}'
+    cur.execute(query)
+
+    rows = cur.fetchall()
+    con.close()
+    return rows
+
+#получение информации о дате игры с питомцем
+def get_user_pet_data_play(user_id):
+    con = sqlite3.connect('db.sqlite')
+    cur = con.cursor()
+
+    query = f'SELECT data_play FROM {table_name} WHERE user_id = {user_id}'
     cur.execute(query)
 
     rows = cur.fetchall()
