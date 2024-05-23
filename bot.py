@@ -1,3 +1,5 @@
+import datetime
+
 import telebot
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 
@@ -30,7 +32,6 @@ def make_media_photos(url_list):
 
 @bot.message_handler(commands=["start"])
 def handle_start(message):
-    print(message.chat.username, ": ", message.text)
     save_chat_data(message.chat)
     bot.send_message(message.chat.id, texts["welcome"])
     markup = make_keyboard(['давай!'])
@@ -46,30 +47,38 @@ def handle_start(message):
 
 @bot.message_handler(commands=["again"])
 def handle_start(message):
-    print(message.chat.username, ": ", message.text)
     save_chat_data(message.chat)
     markup = make_keyboard(['да, давай ещё раз!'])
     bot.send_message(message.chat.id, get_go_message(game_data["title"]), reply_markup=markup)
 
 
 @bot.message_handler(content_types=["text"])
-def handle_text(message):
+def handle_text(message, location_key: str = None):
     user_id = str(message.chat.id)
     button_text = message.text
-
     last_location_key = get_last_location_key(user_id)
     last_location = get_location(last_location_key)
 
     if not last_location_key and button_text == 'давай!' or button_text == 'да, давай ещё раз!':
         next_location_key = "start"
     else:
-        next_location_key = get_next_location_key(last_location, button_text)
+        if location_key:
+            next_location_key = location_key
+        else:
+            next_location_key = get_next_location_key(last_location, button_text)
+
+    if last_location['options_new'][next_location_key].get('input') and not location_key:
+        bot.register_next_step_handler(message, handle_text, next_location_key)
+        return
 
     next_location = get_location(next_location_key)
+
     action = {
         'location_key': next_location["id"],
+        'value': button_text,
         'inventory_items': [],
-        'used_item': None
+        'used_item': None,
+        'action_at': str(datetime.datetime.now()),
     }
     save_game_progress(user_id, action)
 

@@ -73,6 +73,7 @@ def save_chat_data(chat_data):
     user_data[user_id]['name'] = name
     user_data[user_id]['username'] = username
     user_data[user_id]['locations_history'] = []
+    user_data[user_id]['history'] = []
     user_data[user_id]['inventory'] = []
     user_data[user_id]['used_inventory'] = []
     update_user_data()
@@ -80,10 +81,13 @@ def save_chat_data(chat_data):
 
 def save_game_progress(user_id, action):
     location_key = action['location_key']
+    value = action['value']
     inventory_items = action['inventory_items']
     used_inventory_item = action['used_item']
+    action_at = action['action_at']
     if location_key:
         user_data[user_id]['locations_history'].append(location_key)
+        user_data[user_id]['history'].append({'location_key': location_key, 'value': value, 'action_at': action_at})
     if inventory_items:
         user_data[user_id]['inventory'].extend(inventory_items)
     if used_inventory_item:
