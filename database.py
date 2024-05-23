@@ -36,7 +36,7 @@ def prepare_database():
                     f'data_eating TEXT, ' \ 
                     f'data_sleep TEXT, ' \
                     f'data_play TEXT, ' \
-                    f'pet_name TEXT)'
+                    f'pet BLOB)'
     #если надо добавить что-то ещё - напишите
     execute_query(DB_NAME, sql_query)
 
