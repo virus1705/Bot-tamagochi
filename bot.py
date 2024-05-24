@@ -89,7 +89,7 @@ def handle_text(message, location_key: str = None):
     image_uuid = None
     if location_prompt:
         history_data = get_history_data_for_image(user_id)
-        history_prompt = history_data['history_as_string']
+        history_prompt = history_data['history_as_string'] + ' ' + button_text
         origin_image_uuid = history_data['origin_image_uuid']
         prompt = history_prompt + ' ' + location_prompt
         image_data = get_images(user_id, 'test', prompt, origin_image_uuid=origin_image_uuid)
