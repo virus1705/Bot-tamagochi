@@ -3,6 +3,7 @@ import time
 import requests
 import os
 import base64
+from PIL import Image
 
 secret_key = "8BFF3C36AEADCBA85D94ADBE92252A9E"
 api_key = "EEF60CE05FAD276CC374C8059FDD00CF"
@@ -21,7 +22,7 @@ class Text2ImageAPI:
         data = response.json()
         return data[0]['id']
 
-    def generate(self, prompt, model, style, images=1, width=512, height=512):
+    def generate(self, prompt, model, init_image, style, images=1, width=512, height=512):
         styles = {
             "Детальное фото": "UHD",
             "Аниме": "ANIME",
@@ -32,6 +33,7 @@ class Text2ImageAPI:
             "style": styles[style],
             "width": width,
             "height": height,
+            # "init_image": init_image,
             "num_images": images,
             "negativePromptUnclip": "кислотность, высокая контрастность",
             "generateParams": {
@@ -48,7 +50,7 @@ class Text2ImageAPI:
         print(data)
         return data['uuid']
 
-    def check_generation(self, request_id, attempts, delay):
+    def check_generation(self, request_id, attempts=10, delay=10):
         while attempts > 0:
             response = requests.get(self.URL + 'key/api/v1/text2image/status/' + request_id, headers=self.AUTH_HEADERS)
             data = response.json()
@@ -59,24 +61,35 @@ class Text2ImageAPI:
             time.sleep(delay)
 
 
-def get_images(user, filename, prompt, style="Детальное фото", origin=None):
+def get_images(user, filename, prompt, origin_image_uuid=None, style="Детальное фото",  origin=None):
     api = Text2ImageAPI('https://api-key.fusionbrain.ai/', f'{api_key}', f'{secret_key}')
     model_id = api.get_model()
+
+    origin_image = None
+    if origin_image_uuid:
+        origin_image = Image.open(f"user_media/{user}/test.jpg")
+
+
     if origin != None:
-        prompt += f"Cделать животное также, как здесь: {str(origin)}"
-    uuid = api.generate(prompt, model_id, style)
+        prompt += f" Cделать животное так же, как здесь: {str(origin)}"
+    uuid = api.generate(prompt, model_id, origin_image, style)
+
+    if  not origin_image_uuid:
+        origin_image_uuid = uuid
+
     images = api.check_generation(uuid)
 
     image_base64 = images[0]
     image_data = base64.b64decode(image_base64)
     try:
-        with open(f"users_media/{user}/{filename}.jpg", "wb") as file:
+        with open(f"user_media/{user}/{origin_image_uuid}.jpg", "wb") as file:
             file.write(image_data)
     except:
-        os.mkdir(f"users_media/{user}", mode=0o777, dir_fd=None)
-        with open(f"users_media/{user}/{filename}.jpg", "wb") as file:
+        os.mkdir(f"user_media/{user}", mode=0o777, dir_fd=None)
+        with open(f"user_media/{user}/{origin_image_uuid}.jpg", "wb") as file:
             file.write(image_data)
-    return
+    print({prompt, origin })
+    return {'origin_image_uuid': origin_image_uuid, 'image_uuid': uuid, 'image': image_data}
 
 
 #orig = get_images(user="aab", filename="cat", prompt=f"{"рыжий"} {"кот"}, миловидный, пушистый, в портретном стиле на фоне травы и неба. Животное на картинке {"смотрит в твою сторону"}. Фон должен быть немного размытым, а животное чётко изображено.", style="Детальное фото")

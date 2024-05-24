@@ -58,6 +58,22 @@ def get_next_location_key(last_location, option_text):
     return next_location_key
 
 
+def get_history_data_for_image(user_id):
+    history_as_string = ""
+    origin_image_uuid = None
+    user_data_by_id = user_data.get(user_id)
+    if user_data_by_id:
+        history = user_data_by_id["history"]
+        for history_item in history:
+            image_uuid = history_item.get('image_uuid')
+            if not origin_image_uuid and image_uuid:
+                origin_image_uuid = image_uuid
+
+            history_as_string += ' ' + history_item.get('value')
+
+    return {'history_as_string': history_as_string, 'origin_image_uuid': origin_image_uuid}
+
+
 def get_random_item(items_list):
     random_index = randint(0, len(items_list) - 1)
     item = items_list[random_index]
@@ -85,9 +101,11 @@ def save_game_progress(user_id, action):
     inventory_items = action['inventory_items']
     used_inventory_item = action['used_item']
     action_at = action['action_at']
+    image_uuid = action['image_uuid']
     if location_key:
         user_data[user_id]['locations_history'].append(location_key)
-        user_data[user_id]['history'].append({'location_key': location_key, 'value': value, 'action_at': action_at})
+        user_data[user_id]['history'].append({'location_key': location_key, 'value': value, 'action_at': action_at,
+                                              'image_uuid': image_uuid})
     if inventory_items:
         user_data[user_id]['inventory'].extend(inventory_items)
     if used_inventory_item:

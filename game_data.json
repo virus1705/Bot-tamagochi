@@ -138,13 +138,14 @@
 
     "name": {
       "id": "name",
-      "description": "Поздравляю! У вашего питомца появилось имя!",
+      "description": "Поздравляю! У вашего питомца появилось имя!\nПодожди, не нажимай на кнопку, сейчас я пришлю тебе его фотографию ))",
       "options_new": {
         "care": {
           "label": "ухаживать",
           "picture_url": ""
         }
       },
+      "image_prompt": "маленький питомец",
       "picture_urls": [
         "https://disk.yandex.ru/i/anT3sElr_tWqRQ"
       ]
@@ -222,6 +223,7 @@
           "picture_url": ""
           }
       },
+      "image_prompt": "питомец на кровати, не спит",
       "picture_urls": [
         "https://disk.yandex.ru/i/t1Jc57E9gcKQIg"
       ]
@@ -235,6 +237,7 @@
           "picture_url": ""
         }
       },
+      "image_prompt": "питомец в ванной комнате",
       "picture_urls": [
         "https://disk.yandex.ru/i/5BUCsjhXz8iNjw"
       ]
