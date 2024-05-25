@@ -140,7 +140,7 @@
       "id": "name",
       "description": "Поздравляю! У вашего питомца появилось имя!\n",
       "options_new": {
-        "care": {
+        "create": {
           "label": "Создать",
           "picture_url": ""
         }
