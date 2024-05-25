@@ -5,7 +5,7 @@ from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 
 from data_manager import game_data, save_chat_data, get_last_location_key, get_location, get_next_location_key, \
     save_game_progress, get_options_label_list, get_random_item, get_options_picture_url_list, \
-    get_history_data_for_image
+    get_history_data_for_image, get_last_action_at
 from kandinsky import get_images
 from texts import texts, get_go_message
 
@@ -106,6 +106,10 @@ def handle_text(message, location_key: str = None):
         'action_at': str(datetime.datetime.now()),
     }
     save_game_progress(user_id, action)
+
+    # Функция возвращающая значения времени по каждому действию питомца
+    # можно использовать для генерации событий бота
+    print(get_last_action_at(user_id))
 
     options_picture_url_list = get_options_picture_url_list(next_location)
     media_photos = make_media_photos(options_picture_url_list)

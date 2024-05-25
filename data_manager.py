@@ -1,3 +1,4 @@
+import datetime
 import json
 from random import randint
 
@@ -72,6 +73,28 @@ def get_history_data_for_image(user_id):
             history_as_string += ' ' + history_item.get('value')
 
     return {'history_as_string': history_as_string, 'origin_image_uuid': origin_image_uuid}
+
+
+def get_last_action_at(user_id):
+    last_action_at_data = {}
+    user_data_by_id = user_data.get(user_id)
+    if user_data_by_id:
+        history = user_data_by_id["history"]
+        current_datetime = datetime.datetime.now().timestamp()
+        for history_item in history:
+            location_key = history_item['location_key']
+            action_datetime = datetime.datetime.fromisoformat(history_item['action_at']).timestamp()
+            action_at_list = []
+            if last_action_at_data.get(location_key) and last_action_at_data[location_key]['action_at_list']:
+                action_at_list = last_action_at_data[location_key]['action_at_list']
+            action_at_list.append(history_item['action_at'])
+            last_action_at_data[location_key] = {
+                'action_at_list': action_at_list,
+                'last_action_at': history_item['action_at'],
+                'time_passed_in_seconds': current_datetime - action_datetime,
+            }
+
+    return last_action_at_data
 
 
 def get_random_item(items_list):
