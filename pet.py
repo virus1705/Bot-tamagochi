@@ -37,6 +37,7 @@ def create_pet(name: str, animal: str, pictures: dict):
         "name": name,
         "animal": animal,
         "pictures": {
+            "orig": pictures["orig"],
             "glad": pictures["glad"],  # доволен
             "sad": pictures["sad"],  # грустит
             "angry": pictures["angry"],  # сердится

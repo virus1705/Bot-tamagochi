@@ -5,8 +5,9 @@ from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 
 from data_manager import game_data, save_chat_data, get_last_location_key, get_location, get_next_location_key, \
     save_game_progress, get_options_label_list, get_random_item, get_options_picture_url_list, \
-    get_history_data_for_image, get_last_action_at
+    get_history_data_for_image, get_last_action_at, user_data
 from kandinsky import get_images
+from pet import create_pet
 from texts import texts, get_go_message
 
 token = '7127498607:AAGXrqLuP6w7D_KovytWZ_1qzyjjV6Z3mxI'
@@ -23,6 +24,18 @@ def make_keyboard(items):
         markup.add(KeyboardButton(item))
 
     return markup
+
+def create_image(user_id, filename, colour, animal, action, origin=False):
+    if origin:
+        origin = f"http://localhost:8000/{user_id}/orig.jpg"  # потом заменить на нелокальный
+    else:
+        origin = None
+
+    get_images(user=user_id, filename=filename,
+               prompt=f"{colour} {animal}, миловидный, в портретном стиле на фоне травы и неба."
+                      f" Животное на картинке {action}. Фон должен быть немного размытым, "
+                      f"а животное чётко изображено.",
+               style="Детальное фото", origin=origin)
 
 
 def make_media_photos(url_list):
@@ -73,6 +86,31 @@ def handle_text(message, location_key: str = None):
         bot.register_next_step_handler(message, handle_text, next_location_key)
         return
 
+    if get_last_location_key(user_id) == "create":
+        animal = user_data[user_id]["history"][-3]["value"]
+        pet_name = user_data[user_id]["history"][-2]["value"]
+        colour = user_data[user_id]["history"][-1]["value"]
+
+        create_image(user_id, "orig", colour, animal, "смотрит в твою сторону")
+        create_image(user_id, "glad", colour, animal, "выглядит довольным", True)
+        create_image(user_id, "sad", colour, animal, "выглядит грустным", True)
+        create_image(user_id, "angry", colour, animal, "выглядит сердитым", True)
+        create_image(user_id, "joy", colour, animal, "выглядит радостным", True)
+
+        pictures = {
+            "orig": open(f"user_media/{user_id}/orig.jpg", "rb").read(),
+            "glad": open(f"user_media/{user_id}/glad.jpg", "rb").read(),  # доволен
+            "sad": open(f"user_media/{user_id}/sad.jpg", "rb").read(),  # грустит
+            "angry": open(f"user_media/{user_id}/angry.jpg", "rb").read(),  # сердится
+            "joy": open(f"user_media/{user_id}/joy.jpg", "rb").read()  # радуется
+        }
+        pet, thread = create_pet(pet_name, animal, pictures)
+        user_data[user_id]["user_pet"]["pet"] = pet
+        user_data[user_id]["user_pet"]["thread"] = thread
+        # user_data[user_id]["user_pet"]["pet"].Food() - так теперь аналогично использовать остальные функции,
+        # пока не подключена БД
+
+
     next_location = get_location(next_location_key)
 
     options_label_list = get_options_label_list(next_location)
@@ -92,7 +130,7 @@ def handle_text(message, location_key: str = None):
         history_prompt = history_data['history_as_string'] + ' ' + button_text
         origin_image_uuid = history_data['origin_image_uuid']
         prompt = history_prompt + ' ' + location_prompt
-        image_data = get_images(user_id, 'test', prompt, origin_image_uuid=origin_image_uuid)
+        image_data = get_images(user_id, 'test', prompt)
         image_uuid = image_data['image_uuid']
         image = image_data['image']
         bot.send_photo(message.chat.id, image)

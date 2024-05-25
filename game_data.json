@@ -138,7 +138,21 @@
 
     "name": {
       "id": "name",
-      "description": "Поздравляю! У вашего питомца появилось имя!\nПодожди, не нажимай на кнопку, сейчас я пришлю тебе его фотографию ))",
+      "description": "Поздравляю! У вашего питомца появилось имя!\n",
+      "options_new": {
+        "care": {
+          "label": "Создать",
+          "picture_url": ""
+        }
+      },
+      "image_prompt": "маленький питомец",
+      "picture_urls": [
+        "https://disk.yandex.ru/i/anT3sElr_tWqRQ"
+      ]
+    },
+    "create": {
+      "id": "create",
+      "description": "Создаю Вашего питомца\nПодожди, не нажимай на кнопку, сейчас я пришлю тебе его фотографию ))",
       "options_new": {
         "care": {
           "label": "ухаживать",
@@ -150,6 +164,7 @@
         "https://disk.yandex.ru/i/anT3sElr_tWqRQ"
       ]
     },
+
     "care": {
       "id": "care",
       "description": "Основные потребности твоего питомца :",
