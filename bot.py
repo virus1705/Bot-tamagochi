@@ -105,7 +105,7 @@ def handle_text(message, location_key: str = None):
             "joy": open(f"user_media/{user_id}/joy.jpg", "rb").read()  # радуется
         }
         pet, thread = create_pet(pet_name, animal, pictures)
-        user_data[user_id]["user_pet"]["pet"] = pet
+        user_data[user_id]["user_pet"]["pet"] = pet  # отсюда взаимодействие с данными питомца
         user_data[user_id]["user_pet"]["thread"] = thread
         # user_data[user_id]["user_pet"]["pet"].Food() - так теперь аналогично использовать остальные функции,
         # пока не подключена БД

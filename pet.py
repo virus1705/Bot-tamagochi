@@ -77,7 +77,7 @@ class PET:
             self.vivacity -= 5
         return
 
-    def Food(self):  # покормить
+    def Food(self):  # покормить, кнопка
         self.food = min(self.food + 10, 100)
         self.health = min(self.health + 4, 100)
         self.fun = min(self.fun + 5, 100)
@@ -99,7 +99,7 @@ class PET:
         return
 
 
-    def Play(self):  # поиграть
+    def Play(self):  # поиграть, кнопка
         self.health = min(self.health + 4, 100)
         self.fun = min(self.fun + 15, 100)
         self.vivacity -= 10
@@ -120,7 +120,7 @@ class PET:
         self.Sad()
         return
 
-    def wake_up(self):  # разбудить
+    def wake_up(self):  # разбудить, кнопка
         self.is_sleep = False
         if self.sleep_time >= 660:  # 11 минут
             msg = "* Зевок *. Хорошо поспал!"
@@ -135,7 +135,7 @@ class PET:
             self.toilet_time = random.randrange(self.Time+5, [self.Time+120, 1])
         return
 
-    def To_clean(self):
+    def To_clean(self): # отчистить туалет, кнопка
         self.is_clean = True
         self.toilet_time = 0
         self.debuff = 0
@@ -145,7 +145,7 @@ class PET:
 
     # -----------------------------------------------------Жить---------------------------------------------------------
 
-    def Print_characteristics(self):  # отправить характеристики
+    def Print_characteristics(self):  # отправить характеристики, кнопка
         charact = {
             "name": self.name,
             "animal": self.animal,
