@@ -1,3 +1,4 @@
+import datetime
 import json
 from random import randint
 
@@ -58,6 +59,44 @@ def get_next_location_key(last_location, option_text):
     return next_location_key
 
 
+def get_history_data_for_image(user_id):
+    history_as_string = ""
+    origin_image_uuid = None
+    user_data_by_id = user_data.get(user_id)
+    if user_data_by_id:
+        history = user_data_by_id["history"]
+        for history_item in history:
+            image_uuid = history_item.get('image_uuid')
+            if not origin_image_uuid and image_uuid:
+                origin_image_uuid = image_uuid
+
+            history_as_string += ' ' + history_item.get('value')
+
+    return {'history_as_string': history_as_string, 'origin_image_uuid': origin_image_uuid}
+
+
+def get_last_action_at(user_id):
+    last_action_at_data = {}
+    user_data_by_id = user_data.get(user_id)
+    if user_data_by_id:
+        history = user_data_by_id["history"]
+        current_datetime = datetime.datetime.now().timestamp()
+        for history_item in history:
+            location_key = history_item['location_key']
+            action_datetime = datetime.datetime.fromisoformat(history_item['action_at']).timestamp()
+            action_at_list = []
+            if last_action_at_data.get(location_key) and last_action_at_data[location_key]['action_at_list']:
+                action_at_list = last_action_at_data[location_key]['action_at_list']
+            action_at_list.append(history_item['action_at'])
+            last_action_at_data[location_key] = {
+                'action_at_list': action_at_list,
+                'last_action_at': history_item['action_at'],
+                'time_passed_in_seconds': current_datetime - action_datetime,
+            }
+
+    return last_action_at_data
+
+
 def get_random_item(items_list):
     random_index = randint(0, len(items_list) - 1)
     item = items_list[random_index]
@@ -73,6 +112,7 @@ def save_chat_data(chat_data):
     user_data[user_id]['name'] = name
     user_data[user_id]['username'] = username
     user_data[user_id]['locations_history'] = []
+    user_data[user_id]['history'] = []
     user_data[user_id]['inventory'] = []
     user_data[user_id]['used_inventory'] = []
     update_user_data()
@@ -80,10 +120,15 @@ def save_chat_data(chat_data):
 
 def save_game_progress(user_id, action):
     location_key = action['location_key']
+    value = action['value']
     inventory_items = action['inventory_items']
     used_inventory_item = action['used_item']
+    action_at = action['action_at']
+    image_uuid = action['image_uuid']
     if location_key:
         user_data[user_id]['locations_history'].append(location_key)
+        user_data[user_id]['history'].append({'location_key': location_key, 'value': value, 'action_at': action_at,
+                                              'image_uuid': image_uuid})
     if inventory_items:
         user_data[user_id]['inventory'].extend(inventory_items)
     if used_inventory_item:

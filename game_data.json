@@ -32,6 +32,18 @@
         "hamster": {
           "label": "хомяк",
           "picture_url": "https://disk.yandex.ru/i/HOcbrmbS_85LWg"
+        },
+        "rabbit": {
+          "label": "кролик",
+          "picture_url": "https://disk.yandex.ru/i/IM9B3C9rkHanig"
+        },
+        "hedgehog": {
+          "label": "ёжик",
+          "picture_url": "https://disk.yandex.ru/i/Ots6qVzMQA8Oog"
+        },
+        "jerboa": {
+          "label": "тушканчик",
+          "picture_url": "https://disk.yandex.ru/i/26EuhEk3ufZr-g"
         }
       },
       "picture_urls": [
@@ -41,10 +53,11 @@
     },
     "cat": {
       "id": "cat",
-      "description": "Вот твой новый питомец - котенок.\nТеперь, для того, чтобы он жил счастливую жизнь ты должен за ним ухаживать. Начнем?",
+      "description": "Вот твой новый питомец - котенок.\nТеперь, для того, чтобы он жил счастливую жизнь ты должен за ним ухаживать. Прежде всего нужно дать ему имя. Начнем?",
       "options_new": {
-        "care": {
-          "label": "ухаживать",
+        "name": {
+          "label": "дать имя питомцу",
+          "input": true,
           "picture_url": ""
         }
       },
@@ -54,10 +67,11 @@
     },
     "dog": {
       "id": "dog",
-      "description": "Вот твой новый питомец - щенок.\nТеперь, для того, чтобы он жил счастливую жизнь ты должен за ним ухаживать. Начнем?",
+      "description": "Вот твой новый питомец - щенок.\nТеперь, для того, чтобы он жил счастливую жизнь ты должен за ним ухаживать. Прежде всего нужно дать ему имя. Начнем?",
       "options_new": {
-        "care": {
-          "label": "ухаживать",
+        "name": {
+          "label": "дать имя питомцу",
+          "input": true,
           "picture_url": ""
         }
       },
@@ -67,15 +81,73 @@
     },
     "hamster": {
       "id": "hamster",
-      "description": "Вот твой новый питомец - хомячок.\nТеперь, для того, чтобы он жил счастливую жизнь ты должен за ним ухаживать. Начнем?",
+      "description": "Вот твой новый питомец - хомячок.\nТеперь, для того, чтобы он жил счастливую жизнь ты должен за ним ухаживать. Прежде всего нужно дать ему имя. Начнем?",
+      "options_new": {
+        "name": {
+          "label": "дать имя питомцу",
+          "input": true,
+          "picture_url": ""
+        }
+      },
+      "picture_urls": [
+        "https://disk.yandex.ru/i/HOcbrmbS_85LWg"
+      ]
+    },
+    "rabbit": {
+      "id": "rabbit",
+      "description": "Вот твой новый питомец - кролик.\nТеперь, для того, чтобы он жил счастливую жизнь ты должен за ним ухаживать. Прежде всего нужно дать ему имя. Начнем?",
+      "options_new": {
+        "name": {
+          "label": "дать имя питомцу",
+          "input": true,
+          "picture_url": ""
+        }
+      },
+      "picture_urls": [
+        "https://disk.yandex.ru/i/IM9B3C9rkHanig"
+      ]
+    },
+    "hedgehog": {
+      "id": "hedgehog",
+      "description": "Вот твой новый питомец - ёжик.\nТеперь, для того, чтобы он жил счастливую жизнь ты должен за ним ухаживать. Прежде всего нужно дать ему имя. Начнем?",
+      "options_new": {
+        "name": {
+          "label": "дать имя питомцу",
+          "input": true,
+          "picture_url": ""
+        }
+      },
+      "picture_urls": [
+        "https://disk.yandex.ru/i/Ots6qVzMQA8Oog"
+      ]
+    },
+    "jerboa": {
+      "id": "jerboa",
+      "description": "Вот твой новый питомец - тушканчик.\nТеперь, для того, чтобы он жил счастливую жизнь ты должен за ним ухаживать. Прежде всего нужно дать ему имя. Начнем?",
+      "options_new": {
+        "name": {
+          "label": "дать имя питомцу",
+          "input": true,
+          "picture_url": ""
+        }
+      },
+      "picture_urls": [
+        "https://disk.yandex.ru/i/26EuhEk3ufZr-g"
+      ]
+    },
+
+    "name": {
+      "id": "name",
+      "description": "Поздравляю! У вашего питомца появилось имя!\nПодожди, не нажимай на кнопку, сейчас я пришлю тебе его фотографию ))",
       "options_new": {
         "care": {
           "label": "ухаживать",
           "picture_url": ""
         }
       },
+      "image_prompt": "маленький питомец",
       "picture_urls": [
-        "https://disk.yandex.ru/i/HOcbrmbS_85LWg"
+        "https://disk.yandex.ru/i/anT3sElr_tWqRQ"
       ]
     },
     "care": {
@@ -113,7 +185,7 @@
         }
       },
       "picture_urls": [
-        "https://disk.yandex.ru/i/cTHyvsXQ0IBCrg"
+        "https://disk.yandex.ru/i/dM6b9qttxQvBtg"
       ]
     },
     "play": {
@@ -126,7 +198,7 @@
         }
       },
       "picture_urls": [
-        "https://disk.yandex.ru/i/gKdrGHesop5NOA"
+        "https://disk.yandex.ru/i/eICGoWBXhND9AA"
       ]
     },
     "sleep": {
@@ -139,7 +211,7 @@
         }
       },
       "picture_urls": [
-        "https://disk.yandex.ru/i/HOcbrmbS_85LWg"
+        "https://disk.yandex.ru/i/Fkw6cDaI_Sy84g"
       ]
     },
     "wake": {
@@ -151,8 +223,9 @@
           "picture_url": ""
           }
       },
+      "image_prompt": "питомец на кровати, не спит",
       "picture_urls": [
-        "https://disk.yandex.ru/i/HOcbrmbS_85LWg"
+        "https://disk.yandex.ru/i/t1Jc57E9gcKQIg"
       ]
     },
     "toilet": {
@@ -164,8 +237,9 @@
           "picture_url": ""
         }
       },
+      "image_prompt": "питомец в ванной комнате",
       "picture_urls": [
-        "https://disk.yandex.ru/i/HOcbrmbS_85LWg"
+        "https://disk.yandex.ru/i/5BUCsjhXz8iNjw"
       ]
     }
   }
