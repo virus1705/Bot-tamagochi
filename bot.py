@@ -73,7 +73,14 @@ def handle_start(message):
 def handle_status(message):
     user_id = str(message.chat.id)
     status = user_data[user_id]["user_pet"]["pet"].Print_characteristics()
-    bot.send_message(message.chat.id, json.dumps(status))
+    status_text = (f"Имя: {status["name"]}\n"
+                   f"Животное: {status["animal"]}\n"
+                   f"Здоровье: {status["health"]}\n"
+                   f"Сытость: {status["food"]}\n"
+                   f"Веселость: {status["fun"]}\n"
+                   f"Бодрость: {status["vivacity"]}\n"
+                   f"{status["time"]}")
+    bot.send_message(message.chat.id, status_text)
 
 
 @bot.message_handler(content_types=["text"])
