@@ -32,6 +32,7 @@ cat.Play()
 print(cat.Print_characteristics())
 """
 
+
 def create_pet(name: str, animal: str, pictures: dict):
     parameters = {
         "name": name,
@@ -48,6 +49,7 @@ def create_pet(name: str, animal: str, pictures: dict):
     thread = threading.Thread(target=pet.Exist).start()
     return pet, thread
 
+
 class PET:
     def __init__(self, parameters):
         self.name = parameters["name"]
@@ -58,7 +60,7 @@ class PET:
         self.vivacity = 100  # бодрость
         self.pictures = parameters["pictures"]
         self.exists = True
-        self.Time = 0 # время жизни в минутах
+        self.Time = 0  # время жизни в минутах
         self.is_sleep = False
         self.sleep_time = 0
         self.debuff = 0
@@ -83,7 +85,7 @@ class PET:
         self.fun = min(self.fun + 5, 100)
         self.vivacity = min(self.vivacity + 5, 100)
         self.debuff += 1
-        self.to_toilet()
+        # self.to_toilet()
         msg = "Ням-ням!"
         return msg, self.pictures["glad"]
 
@@ -98,12 +100,11 @@ class PET:
             self.vivacity -= 3
         return
 
-
     def Play(self):  # поиграть, кнопка
         self.health = min(self.health + 4, 100)
         self.fun = min(self.fun + 15, 100)
         self.vivacity -= 10
-        msg = "Урааа! Играть!"
+        msg = "Ураа! Люблю играть!"
         return msg, self.pictures["joy"]
 
     # -------------------------------------------------------Спать------------------------------------------------------
@@ -113,12 +114,13 @@ class PET:
         while self.is_sleep and self.sleep_time < 1200:
             time.sleep(1)
             self.sleep_time += 1
-        self.vivacity = min(self.vivacity + self.sleep_time//40, 100)  # прибавит max 30
-        self.fun = min(self.fun + self.sleep_time//240, 100)  # прибавит max 5
-        self.health = min(self.health + self.sleep_time//600, 100)  # прибавит max 2
+        self.vivacity = min(self.vivacity + self.sleep_time // 40, 100)  # прибавит max 30
+        self.fun = min(self.fun + self.sleep_time // 240, 100)  # прибавит max 5
+        self.health = min(self.health + self.sleep_time // 600, 100)  # прибавит max 2
         self.Hunger()
         self.Sad()
-        return
+        # return self.wake_up()
+        return None, None
 
     def wake_up(self):  # разбудить, кнопка
         self.is_sleep = False
@@ -132,16 +134,15 @@ class PET:
     # -----------------------------------------------------srat'--------------------------------------------------------
     def to_toilet(self):
         if self.debuff == 1:
-            self.toilet_time = random.randrange(self.Time+5, [self.Time+120, 1])
-        return
+            self.toilet_time = random.randrange(self.Time + 5, [self.Time + 120, 1])
+        return None, None
 
-    def To_clean(self): # отчистить туалет, кнопка
+    def To_clean(self):  # отчистить туалет, кнопка
         self.is_clean = True
         self.toilet_time = 0
         self.debuff = 0
         msg = "Ура!"
         return msg, self.pictures["joy"]
-
 
     # -----------------------------------------------------Жить---------------------------------------------------------
 
@@ -171,13 +172,8 @@ class PET:
             if self.Time == self.toilet_time:
                 self.is_clean = False
             if not self.is_clean:
-                self.health -= self.debuff//2
+                self.health -= self.debuff // 2
                 self.fun -= self.debuff
             if self.health == 0:
                 self.exists = False
         return
-
-
-
-
-

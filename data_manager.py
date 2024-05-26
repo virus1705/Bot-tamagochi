@@ -17,39 +17,46 @@ def load_user_data():
     file_with_json = open('user_data.json', 'r+', encoding='utf8')
     loaded_user_data = json.load(file_with_json)
     file_with_json.close()
-    return loaded_user_data
+    return {}
+    # return loaded_user_data
 
 
 user_data = load_user_data()
 
 
 def update_user_data():
-    file_for_json = open('user_data.json', 'w', encoding='utf8')
-    json.dump(user_data, file_for_json, ensure_ascii=False)
-    file_for_json.close()
+    return
+    # file_for_json = open('user_data.json', 'w', encoding='utf8')
+    # json.dump(user_data, file_for_json, ensure_ascii=False)
+    # file_for_json.close()
 
 
 def get_location(location_key):
-
     location = game_data['location_data'].get(location_key)
-    print(location_key, location)
     if location:
         return location
     location_404 = game_data['location_data']['404']
     return location_404
 
 
-def get_last_location_key(user_id):
-    last_location_key = ""
+def get_last_action(user_id):
+    last_action = {
+        'location_key': '',
+        'value': '',
+        'next_location_key': '',
+        'inventory_items': [],
+        'used_item': None,
+        'action_at': '',
+    }
     user_data_by_id = user_data.get(user_id)
     if user_data_by_id:
-        history = user_data_by_id["locations_history"]
+        history = user_data_by_id["history"]
         if len(history):
-            last_location_key = history[-1]
-    return last_location_key
+            last_action = history[-1]
+    return last_action
 
 
-def get_next_location_key(last_location, option_text):
+def get_next_location_key_by_value(last_location, option_text):
     next_location_key = ""
     options = last_location["options_new"]
     options_keys = list(options)
@@ -75,8 +82,8 @@ def get_history_data_for_image(user_id):
     return {'history_as_string': history_as_string, 'origin_image_uuid': origin_image_uuid}
 
 
-def get_last_action_at(user_id):
-    last_action_at_data = {}
+def get_actions_history(user_id):
+    actions_history = {}
     user_data_by_id = user_data.get(user_id)
     if user_data_by_id:
         history = user_data_by_id["history"]
@@ -85,16 +92,21 @@ def get_last_action_at(user_id):
             location_key = history_item['location_key']
             action_datetime = datetime.datetime.fromisoformat(history_item['action_at']).timestamp()
             action_at_list = []
-            if last_action_at_data.get(location_key) and last_action_at_data[location_key]['action_at_list']:
-                action_at_list = last_action_at_data[location_key]['action_at_list']
+            value_list = []
+            if actions_history.get(location_key) and actions_history[location_key]['action_at_list']:
+                action_at_list = actions_history[location_key]['action_at_list']
+                value_list = actions_history[location_key]['value_list']
             action_at_list.append(history_item['action_at'])
-            last_action_at_data[location_key] = {
+            value_list.append(history_item['value'])
+            actions_history[location_key] = {
                 'action_at_list': action_at_list,
+                'value_list': value_list,
+                'last_value': history_item['value'],
                 'last_action_at': history_item['action_at'],
                 'time_passed_in_seconds': current_datetime - action_datetime,
             }
 
-    return last_action_at_data
+    return actions_history
 
 
 def get_random_item(items_list):
@@ -114,6 +126,7 @@ def save_chat_data(chat_data):
     user_data[user_id]['locations_history'] = []
     user_data[user_id]['history'] = []
     user_data[user_id]["user_pet"] = {
+        "creating": False,
         "pet": "",
         "thread": "",
     }
@@ -124,11 +137,11 @@ def save_game_progress(user_id, action):
     location_key = action['location_key']
     value = action['value']
     action_at = action['action_at']
-    image_uuid = action['image_uuid']
+    next_location_key = action['next_location_key']
     if location_key:
         user_data[user_id]['locations_history'].append(location_key)
         user_data[user_id]['history'].append({'location_key': location_key, 'value': value, 'action_at': action_at,
-                                              'image_uuid': image_uuid})
+                                              'next_location_key': next_location_key})
     update_user_data()
 
 

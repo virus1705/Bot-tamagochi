@@ -79,7 +79,7 @@ def get_images(user, filename, prompt, style="Детальное фото",  ori
         os.mkdir(f"user_media/{user}", mode=0o777, dir_fd=None)
         with open(f"user_media/{user}/{filename}.jpg", "wb") as file:
             file.write(image_data)
-    return
+    return image_data
 
 
 #orig = get_images(user="aab", filename="cat", prompt=f"{"рыжий"} {"кот"}, миловидный, пушистый, в портретном стиле на фоне травы и неба. Животное на картинке {"смотрит в твою сторону"}. Фон должен быть немного размытым, а животное чётко изображено.", style="Детальное фото")

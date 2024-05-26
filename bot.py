@@ -1,13 +1,14 @@
 import datetime
-
+import json
 import telebot
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 
-from data_manager import game_data, save_chat_data, get_last_location_key, get_location, get_next_location_key, \
+from data_manager import game_data, save_chat_data, get_last_action, get_location, \
     save_game_progress, get_options_label_list, get_random_item, get_options_picture_url_list, \
-    get_history_data_for_image, get_last_action_at, user_data
+    get_actions_history, user_data, get_next_location_key_by_value
 from kandinsky import get_images
 from pet import create_pet
+from picture_manager import generate_images
 from texts import texts, get_go_message
 
 token = '7127498607:AAGXrqLuP6w7D_KovytWZ_1qzyjjV6Z3mxI'
@@ -24,6 +25,7 @@ def make_keyboard(items):
         markup.add(KeyboardButton(item))
 
     return markup
+
 
 def create_image(user_id, filename, colour, animal, action, origin=False):
     if origin:
@@ -67,52 +69,72 @@ def handle_start(message):
     bot.send_message(message.chat.id, get_go_message(game_data["title"]), reply_markup=markup)
 
 
+@bot.message_handler(commands=["status"])
+def handle_status(message):
+    user_id = str(message.chat.id)
+    status = user_data[user_id]["user_pet"]["pet"].Print_characteristics()
+    bot.send_message(message.chat.id, json.dumps(status))
+
+
 @bot.message_handler(content_types=["text"])
-def handle_text(message, location_key: str = None):
+def handle_text(message, location_key: str = ''):
     user_id = str(message.chat.id)
     button_text = message.text
-    last_location_key = get_last_location_key(user_id)
+    value = message.text
+    last_action = get_last_action(user_id)
+    last_location_key = last_action.get('next_location_key')
     last_location = get_location(last_location_key)
 
-    if not last_location_key and button_text == 'давай!' or button_text == 'да, давай ещё раз!':
-        next_location_key = "start"
+    if not last_location_key and button_text == 'давай!' or button_text == 'да, давай ещё раз!' or button_text == 'заново':
+        last_location_key = 'start'
+        next_location_key = "pet"
     else:
         if location_key:
             next_location_key = location_key
         else:
-            next_location_key = get_next_location_key(last_location, button_text)
+            next_location_key = get_next_location_key_by_value(last_location, button_text)
 
-    if next_location_key and last_location['options_new'][next_location_key].get('input') and not location_key:
+    if user_data[user_id]["user_pet"]["creating"]:
+        markup = make_keyboard([])
+        bot.send_message(message.chat.id, 'Питомец еще не родился... Ждите!', reply_markup=markup)
+        return
+
+    action_location_key = last_location_key
+    if last_action['location_key'] == last_location_key:
+        action_location_key = '_' + last_location_key
+    action = {
+        'location_key': action_location_key,
+        'value': value,
+        'next_location_key': next_location_key,
+        'inventory_items': [],
+        'used_item': None,
+        'action_at': str(datetime.datetime.now()),
+    }
+
+    save_game_progress(user_id, action)
+
+    if (next_location_key and last_location['options_new'].get(next_location_key) and
+            last_location['options_new'][next_location_key].get('input') and not location_key):
         bot.register_next_step_handler(message, handle_text, next_location_key)
         return
 
-    if get_last_location_key(user_id) == "create":
-        animal = user_data[user_id]["history"][-3]["value"]
-        pet_name = user_data[user_id]["history"][-2]["value"]
-        colour = user_data[user_id]["history"][-1]["value"]
+    if next_location_key == "name":
+        actions_history = get_actions_history(user_id)
+        animal = actions_history.get('pet').get('last_value')
+        pet_name = actions_history.get('name').get('last_value')
+        color = actions_history.get('color').get('last_value')
+        bot.send_message(message.chat.id, 'Теперь нужно немного подождать "рождения" твоего питомца...', reply_markup=None)
 
-        create_image(user_id, "orig", colour, animal, "смотрит в твою сторону")
-        create_image(user_id, "glad", colour, animal, "выглядит довольным", True)
-        create_image(user_id, "sad", colour, animal, "выглядит грустным", True)
-        create_image(user_id, "angry", colour, animal, "выглядит сердитым", True)
-        create_image(user_id, "joy", colour, animal, "выглядит радостным", True)
+        user_data[user_id]["user_pet"]["creating"] = True
+        pictures = generate_images(user_id, animal, pet_name, color)
 
-        pictures = {
-            "orig": open(f"user_media/{user_id}/orig.jpg", "rb").read(),
-            "glad": open(f"user_media/{user_id}/glad.jpg", "rb").read(),  # доволен
-            "sad": open(f"user_media/{user_id}/sad.jpg", "rb").read(),  # грустит
-            "angry": open(f"user_media/{user_id}/angry.jpg", "rb").read(),  # сердится
-            "joy": open(f"user_media/{user_id}/joy.jpg", "rb").read()  # радуется
-        }
         pet, thread = create_pet(pet_name, animal, pictures)
         user_data[user_id]["user_pet"]["pet"] = pet  # отсюда взаимодействие с данными питомца
         user_data[user_id]["user_pet"]["thread"] = thread
-        # user_data[user_id]["user_pet"]["pet"].Food() - так теперь аналогично использовать остальные функции,
-        # пока не подключена БД
-
+        user_data[user_id]["user_pet"]["creating"] = False
+        bot.send_photo(message.chat.id, pictures['orig'], 'Привет, хозяин!')
 
     next_location = get_location(next_location_key)
-
     options_label_list = get_options_label_list(next_location)
     markup = make_keyboard(options_label_list)
 
@@ -123,36 +145,45 @@ def handle_text(message, location_key: str = None):
     else:
         text = next_location["description"]
         bot.send_message(message.chat.id, text, reply_markup=markup)
-    location_prompt = next_location.get("image_prompt")
-    image_uuid = None
-    if location_prompt:
-        history_data = get_history_data_for_image(user_id)
-        history_prompt = history_data['history_as_string'] + ' ' + button_text
-        origin_image_uuid = history_data['origin_image_uuid']
-        prompt = history_prompt + ' ' + location_prompt
-        image_data = get_images(user_id, 'test', prompt)
-        image_uuid = image_data['image_uuid']
-        image = image_data['image']
-        bot.send_photo(message.chat.id, image)
-
-    action = {
-        'location_key': next_location["id"],
-        'value': button_text,
-        'inventory_items': [],
-        'used_item': None,
-        'image_uuid': image_uuid,
-        'action_at': str(datetime.datetime.now()),
-    }
-    save_game_progress(user_id, action)
+    # location_prompt = next_location.get("image_prompt")
+    # if location_prompt:
+    #     history_data = get_history_data_for_image(user_id)
+    #     history_prompt = history_data['history_as_string'] + ' ' + button_text
+    #     origin_image_uuid = history_data['origin_image_uuid']
+    #     prompt = history_prompt + ' ' + location_prompt
+    #     image_data = get_images(user_id, 'test', prompt)
+    #     # image_uuid = image_data['image_uuid']
+    #     image = image_data
+    #     bot.send_photo(message.chat.id, image)
 
     # Функция возвращающая значения времени по каждому действию питомца
     # можно использовать для генерации событий бота
-    print(get_last_action_at(user_id))
+    # print(get_actions_history(user_id))
 
     options_picture_url_list = get_options_picture_url_list(next_location)
     media_photos = make_media_photos(options_picture_url_list)
     if len(media_photos):
         bot.send_media_group(message.chat.id, media_photos)
+
+    msg, pic = [None, None]
+    if next_location_key == 'feed':
+        msg, pic = user_data[user_id]["user_pet"]["pet"].Food()
+    if next_location_key == 'play':
+        msg, pic = user_data[user_id]["user_pet"]["pet"].Play()
+    if next_location_key == 'sleep':
+        msg, pic = user_data[user_id]["user_pet"]["pet"].Sleep()
+    if next_location_key == 'wake':
+        msg, pic = user_data[user_id]["user_pet"]["pet"].wake_up()
+    if next_location_key == 'clean':
+        msg, pic = user_data[user_id]["user_pet"]["pet"].To_clean()
+    if next_location_key == 'toilet':
+        msg, pic = user_data[user_id]["user_pet"]["pet"].to_toilet()
+    if next_location_key == 'sad':
+        msg, pic = user_data[user_id]["user_pet"]["pet"].Sad()
+    if next_location_key == 'hunger':
+        msg, pic = user_data[user_id]["user_pet"]["pet"].Hunger()
+    if msg and pic:
+        bot.send_photo(message.chat.id, pic, msg)
 
 
 bot.polling()
